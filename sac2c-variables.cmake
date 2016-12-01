@@ -2,7 +2,7 @@
 # from reading sac2crc.
 #
 # Assumptions:
-#    * SAC2C_EXEC is set to operational sac2c. We assume that 
+#    * SAC2C_EXEC is set to operational sac2c. We assume that
 #      `check-sac2c.cmake' has been included earlier.
 #    * TARGET has been set to the target name we compile sac modules for.
 
@@ -22,7 +22,7 @@ SET (SAC2C_T ${SAC2C_EXEC} -target ${TARGET})
 SET (SAC2C ${SAC2C_T} -Xc "\"${SAC2C_EXTRA_INC}\"" -Xtc "\"${SAC2C_EXTRA_INC}\"")
 
 # get the target environment - possibly `x64' or similar...
-EXECUTE_PROCESS (COMMAND ${SAC2C_T} -CTARGET_ENV 
+EXECUTE_PROCESS (COMMAND ${SAC2C_T} -CTARGET_ENV
                  OUTPUT_VARIABLE TARGET_ENV OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 # do several tests to make sure that SBI data is sane...
@@ -30,7 +30,7 @@ IF (NOT TARGET_ENV)
     MESSAGE (FATAL_ERROR "${SAC2C_T} seems not to work, cannot determine SBI data, exiting...")
 ELSE ()
     MACRO (GET_SAC2C_VAR var)
-        EXECUTE_PROCESS (COMMAND ${SAC2C_T} -C${var} 
+        EXECUTE_PROCESS (COMMAND ${SAC2C_T} -C${var}
                          OUTPUT_VARIABLE  ${var}  OUTPUT_STRIP_TRAILING_WHITESPACE)
     ENDMACRO ()
 
