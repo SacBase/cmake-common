@@ -73,11 +73,21 @@ FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
             # Check if the same name can be found amongst the sources of the
             # current package.
             IF ("${n}.sac" IN_LIST local_file_list)
+                # Assume that we have a Mod file as  a dependency.
+                SET (d "${DLL_BUILD_DIR}/${TARGET_ENV}/${SBI}/${dep}")
+                IF ("${libtype}" STREQUAL "Tree")
+                    SET (d "${DLL_BUILD_DIR}/tree/${TARGET_ENV}/${dep}")
+                ENDIF ()
                 # If so, keep it as a dependency.
-                LIST (APPEND ret  "${DLL_BUILD_DIR}/${TARGET_ENV}/${SBI}/${dep}")
+                LIST (APPEND ret "${d}")
             ELSEIF ("${n}.xsac" IN_LIST local_file_list)
+                # Assume that we have a Mod file as  a dependency.
+                SET (d "${DLL_BUILD_DIR}/${TARGET_ENV}/${SBI}/${dep}")
+                IF ("${libtype}" STREQUAL "Tree")
+                    SET (d "${DLL_BUILD_DIR}/tree/${TARGET_ENV}/${dep}")
+                ENDIF ()
                 # If so, keep it as a dependency.
-                LIST (APPEND ret  "${DLL_BUILD_DIR}/${TARGET_ENV}/${SBI}/${dep}")
+                LIST (APPEND ret "${d}")
             ELSE ()
                 # Decide where do we need to look for the library
                 SET (search_pathes ${target_lib_output})
