@@ -21,7 +21,7 @@ ENDIF ()
 
 
 # This function for a given sac source file `file_name' calls
-# `${SAC2C_T} -M ${file_name}', and:
+# `${SAC2C_T} -M ${CMAKE_CURRENT_SOURCE_DIR}/${file_name}', and:
 #
 #   * for Mod/Tree files, if a file can be found amongst the sources,
 #     we add it to the list of local dependencies;
@@ -32,6 +32,9 @@ ENDIF ()
 #   * -l<name> dependencies are ignored.
 #
 # The function stores list of local dependencies to the variable `${ret_name}'.
+#
+# NOTE: file_name should be a relative path so that concatenation with 
+#       CMAKE_CURRENT_XXX_DIR produces correct results.
 FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
     SET (ret)
     SET (local_file_list)
@@ -39,7 +42,7 @@ FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
     SET (target_lib_output)
 
     # Resolve dependencies for the Module.
-    EXECUTE_PROCESS (COMMAND ${SAC2C_T} -M ${file_name}
+    EXECUTE_PROCESS (COMMAND ${SAC2C_T} -M "${CMAKE_CURRENT_SOURCE_DIR}/${file_name}"
                      OUTPUT_VARIABLE dep_str OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     # XXX Currently this is correct, as sac2c always inserts '\n'.
@@ -112,9 +115,13 @@ FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
         ELSE ()
             # If DEP wasn't a sac module, check whether it is an object file.
             STRING (REGEX MATCH "${OBJEXT}$" match "${dep}")
+
             IF (match)
+                # Construct the path that is relative to the given sac file!
+                GET_FILENAME_COMPONENT (sac_file_dir "${file_name}" DIRECTORY)
+                
                 # If so, add it to the list of dependencies
-                LIST (APPEND ret "${CMAKE_CURRENT_BINARY_DIR}/${dep}")
+                LIST (APPEND ret "${CMAKE_CURRENT_BINARY_DIR}/${sac_file_dir}/${dep}")
             ENDIF ()
         ENDIF ()
     ENDFOREACH ()
