@@ -19,7 +19,7 @@ ENDIF ()
 
 # Create local variant of the SAC2C flags
 SET (SAC2C_T ${SAC2C_EXEC} -target ${TARGET})
-SET (SAC2C ${SAC2C_T} -Xc "\"${SAC2C_EXTRA_INC}\"" -Xtc "\"${SAC2C_EXTRA_INC}\"")
+SET (SAC2C ${SAC2C_T} ${SAC2C_CPP_INC} -Xc "\"${SAC2C_EXTRA_INC}\"" -Xtc "\"${SAC2C_EXTRA_INC}\"")
 
 # get the target environment - possibly `x64' or similar...
 EXECUTE_PROCESS (COMMAND ${SAC2C_T} -CTARGET_ENV
