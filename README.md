@@ -20,3 +20,7 @@ Individual files have the following functionality:
      a list of local dependencies that can be used while defining
      a custom target in CMake.
 
+  * `generate-sac2c-dependency-targets.cmake` provides a very similar
+     function as is in `resolve-sac2c-dependencies.cmake`, with the main
+     distinction being that instead of outputting module library file
+     paths, it returns target names.
