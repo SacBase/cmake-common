@@ -1,0 +1,5 @@
+target @PACKAGE_NAME@:
+TREE_OUTPUTDIR += ":@TREE_PATH@"
+LIB_OUTPUTDIR  += ":@LIB_PATH@"
+
+target package :: @PACKAGE_NAME@:
