@@ -62,15 +62,34 @@ IF (NOT IS_DIRECTORY "${sac2crc_path}")
     "and rename it `sac2crc.config'.")
 ENDIF ()
 
-# If a file exists that has the same name, we move it.
-IF (EXISTS "${sac2crc_path}/${sac2crc_file}")
-    MESSAGE (WARNING "Found an existing sac2crc package file, backing it up...")
-    # XXX we might overwrite an existing backup
-    FILE (RENAME "${sac2crc_path}/${sac2crc_file}"
-        "${sac2crc_path}/bak.${sac2crc_file}")
-ENDIF ()
-
-MESSAGE (STATUS "Creating sac2crc package file")
+# Apply variables to template sac2crc file
 FILE (READ "cmake-common/sac2crc/sac2crc.package.in" sac2crc_config_in)
 STRING (CONFIGURE "${sac2crc_config_in}" sac2crc_config_out @ONLY)
-FILE (WRITE "${sac2crc_path}/${sac2crc_file}" "${sac2crc_config_out}")
+
+# If a file exists that has the same name, we generate a hashsum.
+SET (create_sac2crc TRUE)
+IF (EXISTS "${sac2crc_path}/${sac2crc_file}")
+    MESSAGE ("Found an existing sac2crc package file")
+    
+    # generate hashsums
+    FILE (MD5 "${sac2crc_path}/${sac2crc_file}" file_hashsum)
+    STRING (MD5 string_hashsum "${sac2crc_config_out}")
+
+    # compare hashsums
+    IF (NOT "${string_hashsum}" STREQUAL "${file_hashsum}")
+        MESSAGE ("Difference detected, backing up old file")
+
+        # XXX we might overwrite an existing backup
+        FILE (RENAME "${sac2crc_path}/${sac2crc_file}"
+            "${sac2crc_path}/bak.${sac2crc_file}")
+    ELSE ()
+        SET(create_sac2crc FALSE)
+    ENDIF()
+ENDIF ()
+
+IF (create_sac2crc)
+    MESSAGE (STATUS "Creating sac2crc package file")
+    FILE (WRITE "${sac2crc_path}/${sac2crc_file}" "${sac2crc_config_out}")
+ELSE ()
+    MESSAGE (STATUS "Old sac2crc package file still valid, not updating")
+ENDIF ()
