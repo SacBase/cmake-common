@@ -24,3 +24,12 @@ Individual files have the following functionality:
      function as is in `resolve-sac2c-dependencies.cmake`, with the main
      distinction being that instead of outputting module library file
      paths, it returns target names.
+
+  * `generate-sac2crc-file.cmake` is a script which is used to generate a
+    sac2crc file for a *package*, called `sac2crc.package.<package>`. It places
+    it into the user's home directory under `.sac2crc` directory. It is intended
+    that the script is used as a target within the package build.
+
+  * `misc-macros.cmake` contains a miscellaneous collection of functions and
+    macros. Further details on what these functions do is given as comments
+    within.
