@@ -27,7 +27,7 @@ FUNCTION (RESOLVE_SAC_DEPS_AS_TARGETS file_name target_name_template ret_targets
     SET (ret)
 
     # Resolve dependencies for the Module.
-    EXECUTE_PROCESS (COMMAND ${SAC2C_T} -M "${CMAKE_CURRENT_SOURCE_DIR}/${file_name}"
+    EXECUTE_PROCESS (COMMAND ${SAC2C_T} -v0 -M "${CMAKE_CURRENT_SOURCE_DIR}/${file_name}"
                      OUTPUT_VARIABLE dep_str OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     # XXX Currently this is correct, as sac2c always inserts '\n'.
