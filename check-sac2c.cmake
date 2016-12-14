@@ -14,9 +14,18 @@ IF (NOT SAC2C_EXEC)
 ENDIF ()
 
 # Check that sac2c actually works by calling "sac2c -V"
-EXECUTE_PROCESS (COMMAND ${SAC2C_EXEC} -V RESULT_VARIABLE sac2c_exec_res OUTPUT_QUIET ERROR_QUIET)
+EXECUTE_PROCESS (COMMAND ${SAC2C_EXEC} -V
+                 RESULT_VARIABLE sac2c_exec_res
+                 OUTPUT_VARIABLE sac2c_version
+                 OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
 IF (NOT "${sac2c_exec_res}" STREQUAL "0")
     MESSAGE (FATAL_ERROR "Call to \"${SAC2C_EXEC} -V\" failed, something "
                          "wrong with the sac2c binary")
 ENDIF ()
 
+STRING (REGEX MATCH ".*(DEBUG|debug).*" debug_match "${sac2c_version}")
+
+IF (debug_match)
+    MESSAGE (WARNING "\n\nIt seems that you are using a DEBUG version of "
+                     "sac2c which is noticeably slower.\n\n")
+ENDIF ()
