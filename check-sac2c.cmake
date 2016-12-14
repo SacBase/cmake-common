@@ -3,6 +3,9 @@
 # SAC2C_EXEC can be passed as an argument to `cmake' call in which
 # case we treat it as a path to the sac2c executable.
 IF (NOT SAC2C_EXEC)
+    # Make sure that we can set some value into this variable now.
+    UNSET (SAC2C_EXEC CACHE)
+
     # Try to find sac2c and fail if it is not there.
     FIND_PROGRAM (SAC2C_EXEC NAMES "sac2c")
     IF (NOT SAC2C_EXEC)
