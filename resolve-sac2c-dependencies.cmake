@@ -53,7 +53,7 @@ FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
     STRING (REPLACE ":" ";" tree_dir_list "${TREE_OUTPUTDIR}")
     STRING (REPLACE ":" ";" lib_dir_list "${LIB_OUTPUTDIR}")
     FOREACH (p ${tree_dir_list})
-        LIST (APPEND target_tree_output "${p}/${TARGET_ENV}/${SBI}")
+        LIST (APPEND target_tree_output "${p}/tree/${TARGET_ENV}")
     ENDFOREACH ()
     FOREACH (p ${lib_dir_list})
         LIST (APPEND target_lib_output "${p}/${TARGET_ENV}/${SBI}")
@@ -102,15 +102,17 @@ FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
                 # be an external dependency, in which case we search it via
                 # FIND_LIBRARY.
                 FIND_LIBRARY (
-                    lib_found
+                    lib
                     NAMES ${dep}
                     HINTS ${search_pathes}
                     NO_DEFAULT_PATH)
-                IF (NOT lib_found)
+                IF (NOT lib)
+                    UNSET (lib CACHE) # otherwise we never update the variable
                     MESSAGE (FATAL_ERROR
-                             "Exteral SAC module `${n}' which is required "
+                             "Exteral SAC ${libtype} file `${n}' which is required "
                              "to build `${file_name}' is not found!")
                 ENDIF ()
+                UNSET (lib CACHE) # otherwise we never update the variable
             ENDIF ()
         ELSE ()
             # If DEP wasn't a sac module, check whether it is an object file.
