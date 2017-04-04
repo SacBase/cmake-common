@@ -20,3 +20,26 @@ FUNCTION (REMOVE_MODULE_IN_SRC source_list modules_list)
     ENDFOREACH ()
     SET (${source_list} ${${source_list}} PARENT_SCOPE)
 ENDFUNCTION ()
+
+# This macro creates the `create-sac2crc-file' target, which generates a
+# project specific sac2crc file and places into `~/.sac2crc' - it is assumed
+# that this directory exists.
+#
+# Parameters:
+#  - _package_name (required) => name of the project name
+#  - _lib_path     (required) => location of libraries
+#  - _tree_path    (required) => location of tree files
+MACRO (CREATE_SAC2CRC_TARGET _package_name _lib_path _tree_path)
+    ADD_CUSTOM_TARGET (create-sac2crc-file ALL
+        COMMAND ${CMAKE_COMMAND}
+            # XXX on non-*NIX systems environment variable `HOME' will not exist
+            -DUSER_HOME="$ENV{HOME}"
+            # XXX ideally we should use PROJECT_NAME, but sadly this has a dash `-'
+            #     which sac2crc does not support within target names
+            -DPACKAGE_NAME="${_package_name}"
+            -DLIB_PATH="${_lib_path}"
+            -DTREE_PATH="${_tree_path}"
+            -P "${PROJECT_SOURCE_DIR}/cmake-common/generate-sac2crc-file.cmake"
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Creating package sac2crc file in user's home directory")
+ENDMACRO ()
