@@ -1,4 +1,7 @@
 # This file checks whether we have an operational sac2c compiler.
+#
+# Usable outputs:
+#    * SAC2C_VERSION is set
 
 # SAC2C_EXEC can be passed as an argument to `cmake' call in which
 # case we treat it as a path to the sac2c executable.
@@ -15,15 +18,17 @@ ENDIF ()
 
 # Check that sac2c actually works by calling "sac2c -V"
 EXECUTE_PROCESS (COMMAND ${SAC2C_EXEC} -V
-                 RESULT_VARIABLE sac2c_exec_res
-                 OUTPUT_VARIABLE sac2c_version
+                 RESULT_VARIABLE _sac2c_exec_res
+                 OUTPUT_VARIABLE _sac2c_version
                  OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
-IF (NOT "${sac2c_exec_res}" STREQUAL "0")
+IF (NOT "${_sac2c_exec_res}" STREQUAL "0")
     MESSAGE (FATAL_ERROR "Call to \"${SAC2C_EXEC} -V\" failed, something "
                          "wrong with the sac2c binary")
 ENDIF ()
 
-STRING (REGEX MATCH ".*(DEBUG|debug).*" debug_match "${sac2c_version}")
+STRING (REGEX REPLACE "^sac2c ([\.0-9a-zA-Z-]+)\n.*" "\\1" SAC2C_VERSION ${_sac2c_version})
+
+STRING (REGEX MATCH ".*(DEBUG|debug).*" debug_match "${SAC2C_VERSION}")
 
 IF (debug_match)
     MESSAGE (WARNING "\n\nIt seems that you are using a DEBUG version of "

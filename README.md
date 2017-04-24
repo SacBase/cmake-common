@@ -7,12 +7,15 @@ Individual files have the following functionality:
 
   * `check-sac2c.cmake` checks whether we have an operational sac2c
      compiler.  The `SAC2C_EXEC` variable overrides search for
-     `sac2c` on the PATH.
+     `sac2c` on the PATH. This produces the `SAC2C_VERSION` variable.
 
   * `sac2c-variables.cmake` defines a number of useful sac2c variables
      that are mainly coming from parsing sac2crc for a given TARGET.
      Also it performs some sanity checks like: chosen target is set
      in sac2crc, sac2c executable is set, etc.
+
+  * `generate-version-vars.cmake` defined a function where generates the
+     MAJOR, MINOR, and PATCH numbers using the `git-describe` tool.
 
   * `resolve-sac2c-dependencies.cmake` defines a function that for
      a given file runs `sac2c -M`, checks whether external dependencies
