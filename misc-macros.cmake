@@ -29,7 +29,8 @@ ENDFUNCTION ()
 #  - _package_name (required) => name of the project name
 #  - _lib_path     (required) => location of libraries
 #  - _tree_path    (required) => location of tree files
-MACRO (CREATE_SAC2CRC_TARGET _package_name _lib_path _tree_path)
+#  - _libs         (optional) => string of C-libraries, e.g. '-lm'
+MACRO (CREATE_SAC2CRC_TARGET _package_name _lib_path _tree_path _libs)
     ADD_CUSTOM_TARGET (create-sac2crc-file ALL
         COMMAND ${CMAKE_COMMAND}
             # XXX on non-*NIX systems environment variable `HOME' will not exist
@@ -39,6 +40,7 @@ MACRO (CREATE_SAC2CRC_TARGET _package_name _lib_path _tree_path)
             -DPACKAGE_NAME="${_package_name}"
             -DLIB_PATH="${_lib_path}"
             -DTREE_PATH="${_tree_path}"
+            -DLIBS="${_libs}"
             -P "${PROJECT_SOURCE_DIR}/cmake-common/generate-sac2crc-file.cmake"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         COMMENT "Creating package sac2crc file in user's home directory")

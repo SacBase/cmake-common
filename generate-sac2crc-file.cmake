@@ -41,13 +41,13 @@ ENDIF ()
 SET (sac2crc_path "${USER_HOME}/.sac2crc")
 SET (sac2crc_file "sac2crc.package.${PACKAGE_NAME}")
 
-# XXX perhaps over engineered? 
+# XXX perhaps over engineered?
 IF (NOT IS_ABSOLUTE "${LIB_PATH}")
     MESSAGE (WARNING "Lib path should be absolute")
     GET_FILENAME_COMPONENT (LIB_PATH "${LIB_PATH}" ABSOLUTE)
 ENDIF ()
 
-# XXX perhaps over engineered? 
+# XXX perhaps over engineered?
 IF (NOT IS_ABSOLUTE "${TREE_PATH}")
     MESSAGE (WARNING "Tree path should be absolute")
     GET_FILENAME_COMPONENT (TREE_PATH "${TREE_PATH}" ABSOLUTE)
@@ -56,7 +56,7 @@ ENDIF ()
 # If the user has no `.sac2crc' directory in their home, they should
 # be the ones to create it.
 IF (NOT IS_DIRECTORY "${sac2crc_path}")
-    MESSAGE (FATAL_ERROR 
+    MESSAGE (FATAL_ERROR
     "No ~/.sac2crc directory found, please create it. If you have a "
     "`.sac2crc' file, please move this to the ~/.sac2crc directory "
     "and rename it `sac2crc.config'.")
@@ -70,7 +70,7 @@ STRING (CONFIGURE "${sac2crc_config_in}" sac2crc_config_out @ONLY)
 SET (create_sac2crc TRUE)
 IF (EXISTS "${sac2crc_path}/${sac2crc_file}")
     MESSAGE ("Found an existing sac2crc package file")
-    
+
     # generate hashsums
     FILE (MD5 "${sac2crc_path}/${sac2crc_file}" file_hashsum)
     STRING (MD5 string_hashsum "${sac2crc_config_out}")
