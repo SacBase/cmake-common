@@ -33,6 +33,10 @@ Individual files have the following functionality:
     it into the user's home directory under `.sac2crc` directory. It is intended
     that the script is used as a target within the package build.
 
+  * `check-sac2c-feature-support.cmake` contains a collection of macros/functions
+    which check for supported features in `sac2c`. The results are intended to
+    be exposed via the generated `config.h` file.
+
   * `misc-macros.cmake` contains a miscellaneous collection of functions and
     macros. Further details on what these functions do is given as comments
     within.
