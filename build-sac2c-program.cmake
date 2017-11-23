@@ -29,13 +29,16 @@ ENDIF ()
 #       binary_name: 
 #           name of the binary NAME --- this is used as an argument to -o flag
 #           of sac2c and this is used to constuct the name of the custom target.
+#       file_deps:
+#           file dependencies of the given target
 #       local_sac_modules:
 #           a list of sac source files --- local modules that may result in
 #           dependency to the binaries we are building.
 #       sac2c_flags:
 #           flags that sac2c needs to build the program.
 #       
-MACRO (SAC2C_COMPILE_PROG file_name binary_name local_sac_modules sac2c_flags)
+MACRO (SAC2C_COMPILE_PROG_DEPS file_name binary_name file_deps local_sac_modules sac2c_flags)
+    #MESSAGE ("===== ${file_name}, ${binary_name}, ${file_deps}, ${local_sac_modules}, ${sac2c_flags}")
     # Compute a full path to sac source    
     SET (src "${CMAKE_CURRENT_SOURCE_DIR}/${file_name}")
 
@@ -45,19 +48,22 @@ MACRO (SAC2C_COMPILE_PROG file_name binary_name local_sac_modules sac2c_flags)
     # Compute dependencies to local sac_modules
     RESOLVE_SAC_DEPENDENCIES ("${file_name}" "${local_sac_modules}" moddep_list)
    
-    MESSAGE ("dependencies for ${file_name} => ${moddep_list}")
+    #MESSAGE ("dependencies for ${file_name} => ${moddep_list}")
 
     SET (path_to_binary "${bin_dir}/${binary_name}")
     ADD_CUSTOM_COMMAND (
         OUTPUT ${path_to_binary}
         COMMAND ${SAC2C} ${sac2c_flags} -o ${binary_name} ${src}
         WORKING_DIRECTORY ${bin_dir}
-        DEPENDS ${moddep_list}
+        DEPENDS ${file_deps} ${moddep_list}
         MAIN_DEPENDENCY ${src} 
-        COMMENT "Building ${bin_name} sac program from ${src}")
+        COMMENT "Building ${binary_name} sac program from ${src}")
 
     # Make a call to the command that compiles the module a part
     # of the default build process.
     ADD_CUSTOM_TARGET (prog-${binary_name}-${TARGET} ALL DEPENDS ${path_to_binary})
 ENDMACRO ()
 
+MACRO (SAC2C_COMPILE_PROG file_name binary_name local_sac_modules sac2c_flags)
+    SAC2C_COMPILE_PROG_DEPS (${file_name} ${binary_name} "" "${local_sac_modules}" "${sac2c_flags}")
+ENDMACRO()
