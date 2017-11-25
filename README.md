@@ -37,6 +37,16 @@ Individual files have the following functionality:
     which check for supported features in `sac2c`. The results are intended to
     be exposed via the generated `config.h` file.
 
+  * `build-sac2c-module.cmake` provides macros to create targets to build SaC
+    modules (with dependency resolution provided by `resolve-sac2c-dependencies.cmake`)
+
+  * `build-sac2c-progam.cmake` provides macros to create targets to build SaC
+    programs (with dependency resolution provided by `resolve-sac2c-dependencies.cmake`)
+
+  * `sac2c-prog-with-versions.cmake` provides macros to create targets to build SaC
+    programs that make use of an external *version* config. Precise details of what this is
+    is explained within the cmake file.
+
   * `misc-macros.cmake` contains a miscellaneous collection of functions and
     macros. Further details on what these functions do is given as comments
     within.
