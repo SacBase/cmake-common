@@ -4,6 +4,7 @@
 
 # List of feature variables:
 #  * `HAVE_HEADER_PRAGMA`
+#  * `HAVE_GENERIC_FLAG`
 
 # For consistency all macros/functions should start with
 # `CHECK_SAC2C_SUPPORT_*` where `*` is the feature being
@@ -26,5 +27,23 @@ int main() { return ilogb( 12d); }")
         ERROR_QUIET)
     IF (${_cshp_result} STREQUAL "0")
         SET (HAVE_HEADER_PRAGMA YES)
+    ENDIF ()
+ENDMACRO ()
+
+# This macro checks if SAC2C can use the `-generic`
+# flag, which is needed to create modules that are compiled
+# without architecture specific optimisations.
+SET (HAVE_GENERIC_FLAG NO)
+MACRO (CHECK_SAC2C_SUPPORT_GENERIC_FLAG)
+    SET (_sgen_source "int main { return 0; }")
+
+    EXECUTE_PROCESS (
+        COMMAND ${CMAKE_COMMAND} -E echo "${_sgen_source}"
+        COMMAND ${SAC2C_EXEC} -generic
+        RESULT_VARIABLE _sgen_result
+        OUTPUT_QUIET
+        ERROR_QUIET)
+    IF (${_sgen_result} STREQUAL "0")
+        SET (HAVE_GENERIC_FLAG YES)
     ENDIF ()
 ENDMACRO ()
