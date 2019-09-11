@@ -35,7 +35,7 @@ ENDMACRO ()
 # without architecture specific optimisations.
 SET (HAVE_GENERIC_FLAG NO)
 MACRO (CHECK_SAC2C_SUPPORT_GENERIC_FLAG)
-    SET (_sgen_source "int main { return 0; }")
+    SET (_sgen_source "int main () { return 0; }")
 
     EXECUTE_PROCESS (
         COMMAND ${CMAKE_COMMAND} -E echo "${_sgen_source}"
