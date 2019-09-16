@@ -4,7 +4,10 @@
 
 # List of feature variables:
 #  * `HAVE_HEADER_PRAGMA`
-#  * `HAVE_GENERIC_FLAG`
+
+# Some macros here will create variables with dynamic names,
+# typically thought they start with HAVE_. Please read the
+# comments carefully and see the naming convention of variables.
 
 # For consistency all macros/functions should start with
 # `CHECK_SAC2C_SUPPORT_*` where `*` is the feature being
@@ -30,20 +33,29 @@ int main() { return ilogb( 12d); }")
     ENDIF ()
 ENDMACRO ()
 
-# This macro checks if SAC2C can use the `-generic`
-# flag, which is needed to create modules that are compiled
-# without architecture specific optimisations.
-SET (HAVE_GENERIC_FLAG NO)
-MACRO (CHECK_SAC2C_SUPPORT_GENERIC_FLAG)
+# This macro allows for arbitrary flags to be tested,
+# ensuring that the sac2c binary supports the feature
+# provided by that flag. Only *one* flag may be given.
+# After calling the macro, the variable HAVE_FLAG_name
+# will be set, e.g. for flag '--test-one', the variable
+# name is HAVE_FLAG_TESTONE. Any underscores (_) in the
+# flag are maintained, e.g. '--test_two' has variable
+# HAVE_FLAG_TEST_TWO.
+MACRO (CHECK_SAC2C_SUPPORT_FLAG _flag)
+    STRING (REPLACE "-" "" _flag_name "${_flag}")
+    STRING (TOUPPER "${_flag_name}" _flag_name_u)
+    SET (HAVE_FLAG_${_flag_name_u} FALSE)
     SET (_sgen_source "int main () { return 0; }")
+
+    MESSAGE (STATUS "Checking if sac2c has flag \"${_flag}\"")
 
     EXECUTE_PROCESS (
         COMMAND ${CMAKE_COMMAND} -E echo "${_sgen_source}"
-        COMMAND ${SAC2C_EXEC} -generic
+        COMMAND ${SAC2C_EXEC} ${_flag}
         RESULT_VARIABLE _sgen_result
         OUTPUT_QUIET
         ERROR_QUIET)
     IF (${_sgen_result} STREQUAL "0")
-        SET (HAVE_GENERIC_FLAG YES)
+        SET (HAVE_FLAG_${_flag_name_u} YES)
     ENDIF ()
 ENDMACRO ()
