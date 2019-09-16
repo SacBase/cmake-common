@@ -36,6 +36,8 @@ ENDMACRO ()
 # This macro allows for arbitrary flags to be tested,
 # ensuring that the sac2c binary supports the feature
 # provided by that flag. Only *one* flag may be given.
+# As we only check that a flag is support, we don't need
+# to compile anything, we break at parsing.
 # After calling the macro, the variable HAVE_FLAG_name
 # will be set, e.g. for flag '--test-one', the variable
 # name is HAVE_FLAG_TESTONE. Any underscores (_) in the
@@ -51,7 +53,7 @@ MACRO (CHECK_SAC2C_SUPPORT_FLAG _flag)
 
     EXECUTE_PROCESS (
         COMMAND ${CMAKE_COMMAND} -E echo "${_sgen_source}"
-        COMMAND ${SAC2C_EXEC} ${_flag}
+        COMMAND ${SAC2C_EXEC} -bscp ${_flag}
         RESULT_VARIABLE _sgen_result
         OUTPUT_QUIET
         ERROR_QUIET)
