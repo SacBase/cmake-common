@@ -35,18 +35,16 @@ ENDMACRO ()
 
 # This macro allows for arbitrary flags to be tested,
 # ensuring that the sac2c binary supports the feature
-# provided by that flag. Only *one* flag may be given.
-# As we only check that a flag is support, we don't need
-# to compile anything, we break at parsing.
+# provided by that flag. Only *one* sac2c flag may be
+# given. As we only check that a flag is supported, we
+# don't need to compile anything, we break at parsing.
 # After calling the macro, the variable HAVE_FLAG_name
-# will be set, e.g. for flag '--test-one', the variable
-# name is HAVE_FLAG_TESTONE. Any underscores (_) in the
-# flag are maintained, e.g. '--test_two' has variable
-# HAVE_FLAG_TEST_TWO.
-MACRO (CHECK_SAC2C_SUPPORT_FLAG _flag)
-    STRING (REPLACE "-" "" _flag_name "${_flag}")
-    STRING (TOUPPER "${_flag_name}" _flag_name_u)
-    SET (HAVE_FLAG_${_flag_name_u} FALSE)
+# will be set, where 'name' is given as the first argument
+# to the macro.
+# param: _name the name to append to the test variable
+# param: _flag the flag to check
+MACRO (CHECK_SAC2C_SUPPORT_FLAG _name _flag)
+    SET (HAVE_FLAG_${_name} FALSE)
     SET (_sgen_source "int main () { return 0; }")
 
     MESSAGE (STATUS "Checking if sac2c has flag \"${_flag}\"")
@@ -58,6 +56,6 @@ MACRO (CHECK_SAC2C_SUPPORT_FLAG _flag)
         OUTPUT_QUIET
         ERROR_QUIET)
     IF (${_sgen_result} STREQUAL "0")
-        SET (HAVE_FLAG_${_flag_name_u} YES)
+        SET (HAVE_FLAG_${_name} TRUE)
     ENDIF ()
 ENDMACRO ()
