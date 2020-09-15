@@ -53,13 +53,10 @@ IF (NOT IS_ABSOLUTE "${TREE_PATH}")
     GET_FILENAME_COMPONENT (TREE_PATH "${TREE_PATH}" ABSOLUTE)
 ENDIF ()
 
-# If the user has no `.sac2crc' directory in their home, they should
-# be the ones to create it.
+# If the user has no `.sac2crc' directory in their home, we create
+# it for them.
 IF (NOT IS_DIRECTORY "${sac2crc_path}")
-    MESSAGE (FATAL_ERROR
-    "No ~/.sac2crc directory found, please create it. If you have a "
-    "`.sac2crc' file, please move this to the ~/.sac2crc directory "
-    "and rename it `sac2crc.config'.")
+    FILE (MAKE_DIRECTORY "${sac2crc_path}")
 ENDIF ()
 
 # Apply variables to template sac2crc file
