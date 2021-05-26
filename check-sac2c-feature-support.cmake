@@ -51,7 +51,7 @@ MACRO (CHECK_SAC2C_SUPPORT_FLAG _name _flag _arg)
 
     EXECUTE_PROCESS (
         COMMAND ${CMAKE_COMMAND} -E echo "${_sgen_source}"
-        COMMAND ${SAC2C_EXEC} -bscp ${_flag}
+        COMMAND ${SAC2C_EXEC} -bscp ${_flag} ${_arg}
         RESULT_VARIABLE _sgen_result
         OUTPUT_QUIET
         ERROR_QUIET)
