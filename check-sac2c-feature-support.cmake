@@ -43,11 +43,11 @@ ENDMACRO ()
 # to the macro.
 # param: _name the name to append to the test variable
 # param: _flag the flag to check
-MACRO (CHECK_SAC2C_SUPPORT_FLAG _name _flag)
+MACRO (CHECK_SAC2C_SUPPORT_FLAG _name _flag _arg)
     SET (HAVE_FLAG_${_name} FALSE)
     SET (_sgen_source "int main () { return 0; }")
 
-    MESSAGE (STATUS "Checking if sac2c has flag \"${_flag}\"")
+    MESSAGE (CHECK_START "Checking if sac2c supports flag \"${_flag}\"")
 
     EXECUTE_PROCESS (
         COMMAND ${CMAKE_COMMAND} -E echo "${_sgen_source}"
@@ -57,5 +57,8 @@ MACRO (CHECK_SAC2C_SUPPORT_FLAG _name _flag)
         ERROR_QUIET)
     IF (${_sgen_result} STREQUAL "0")
         SET (HAVE_FLAG_${_name} TRUE)
+        MESSAGE (CHECK_PASS "found")
+    ELSE ()
+        MESSAGE (CHECK_FAIL "not found")
     ENDIF ()
 ENDMACRO ()

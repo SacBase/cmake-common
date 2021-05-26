@@ -23,7 +23,7 @@ ENDIF ()
 
 # Create local variant of the SAC2C flags
 SET (SAC2C_T ${SAC2C_EXEC} ${SAC2C_CPP_INC} -target ${TARGET})
-CHECK_SAC2C_SUPPORT_FLAG ("xp" "-Xp -DTEST")
+CHECK_SAC2C_SUPPORT_FLAG ("xp" "-Xp" "-DTEST")
 IF (HAVE_FLAG_xp)
     SET (SAC2C ${SAC2C_T} -Xp "\"${SAC2C_EXTRA_INC}\"" -Xtc "\"${SAC2C_EXTRA_INC}\"")
 ELSE ()
