@@ -12,7 +12,12 @@ Individual files have the following functionality:
   * `sac2c-variables.cmake` defines a number of useful sac2c variables
      that are mainly coming from parsing sac2crc for a given TARGET.
      Also it performs some sanity checks like: chosen target is set
-     in sac2crc, sac2c executable is set, etc.
+     in sac2crc, sac2c executable is set, etc. Feature flag support is
+     also checked here using the `CHECK_SAC2C_SUPPORT_FLAG` macro from
+     `misc-macros.cmake`, as this is used locally the `CMAKE_COMMON_DIR`
+     variable is configurable to set the path to the `misc-macros.cmake`
+     file from the root of the project directory, this defaults to the
+     path `cmake-common`.
 
   * `generate-version-vars.cmake` defined a function where generates the
      MAJOR, MINOR, and PATCH numbers using the `git-describe` tool.
