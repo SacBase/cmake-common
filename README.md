@@ -1,9 +1,24 @@
-This repository contains a collection of CMake files that will be
-used to build sac2c packages.  We are going to use this repository
-as a sub-module in the packages so that maintenance of the common
-part of the build system gets easier.
+CMake Common for SaC-based Projects
+===================================
 
-Individual files have the following functionality:
+About
+-----
+
+This repository contains a collection of CMake files that are useful
+for building SaC-based projects, such as modules and SaC programs.
+
+A typical initial stage of making use of these CMake files is to
+add the repository as a git submodule, this way you can maintain a specific
+version of the files in your SaC project.
+
+Detailed Description
+--------------------
+
+### CMake files; functions and macros
+
+These files provide macros and functions which can be directly called within
+your SaC project. A description of the features provided by each file is given
+below:
 
   * `check-sac2c.cmake` checks whether we have an operational sac2c
      compiler.  The `SAC2C_EXEC` variable overrides search for
@@ -56,3 +71,43 @@ Individual files have the following functionality:
   * `misc-macros.cmake` contains a miscellaneous collection of functions and
     macros. Further details on what these functions do is given as comments
     within.
+
+### CMake Project Language
+
+We also provide a CMake language specification for making CMake use the SaC compiler
+directly (_Note_ this is not fully tested yet!).
+
+To use the language specification, setup your `CMakeLists.txt` file as follows:
+```cmake
+project(SomeSACProject NONE)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-common")
+enable_language(SAC)
+```
+Note that we set the project language to `NONE`, and then use `enable_language` to
+activate the SaC language specification.
+
+Setup
+-----
+
+To add this repository as a submodule, do the following in your SaC project repository:
+```sh
+$ git submodule add https://github.com/SacBase/cmake-common.git
+$ git submodule update --init
+```
+
+If you later wish to pull a more recent version the `cmake-common` repo, you can do the
+following:
+```sh
+$ git submodule update --recursive --remote
+```
+
+Usage
+-----
+
+To use the functions and macros, you need to `INCLUDE` these into your CMake project.
+
+License
+-------
+
+See `LICENSE.txt` for details.
