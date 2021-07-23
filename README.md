@@ -14,7 +14,62 @@ version of the files in your SaC project.
 Detailed Description
 --------------------
 
-### CMake files; functions and macros
+### Use SAC in your CMake-based project
+
+To make it as easy as possible to use SAC within a CMake-based project,
+we provide a _package_ which searches for the SAC compiler and other tools
+and sets certain needed variables for building. Additionally, we provide
+the `UseSAC` module which provides some conveniences functions for building
+SAC programs and modules.
+
+To make use of this, you can use the following example `CMakeLists.txt` file
+as a base to start with:
+
+```cmake
+CMAKE_MINIMUM_REQUIRED (VERSION 3.19)
+
+# Project language can be anything really, we use C here as an example
+PROJECT (<project-name> C)
+
+# we need to append this repo to CMake module path
+LIST (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-common")
+
+# Now we can "find" sac2c and other tools; this provides paths to
+# the compiler with some variables set which might be needed to
+# compile some SAC code, e.g. provides the ${SAC_COMPILER} variable
+# for sac2c, and ${SAC_C_COMPILER} for saccc.
+FIND_PACKAGE (SAC REQUIRED)
+
+# Functions provided here make it easy to compile SAC programs
+# and modules!
+INCLUDE ("${CMAKE_SOURCE_DIR}/cmake-common/UseSAC.cmake")
+
+# When building modules, it is advisable to correct create a sac2crc
+# file so that the SAC compiler can find the modules
+INCLUDE ("${CMAKE_SOURCE_DIR}/cmake-common/misc-macros.cmake")
+CREATE_SAC2CRC_TARGET ("<project-name>" "${CMAKE_BINARY_DIR}/lib" "${CMAKE_BINARY_DIR}/lib" "")
+
+# Other CMake stuff...
+
+# Now we can call function to build SAC program
+ADD_SAC_EXECUTABLE (proga proga.sac)
+```
+
+Briefly, from `UseSAC` you can use the following functions:
+
+* `ADD_SAC_EXECUTABLE (name source [TARGET seq] [CSOURCE c-file;...] [EXCLUDE_FROM_ALL])`
+  Causes the SAC sources (together with any C-sources) to be compiled into a program called
+  `name`.
+
+* `ADD_SAC_LIBRARY (name source [TARGET seq] [CSOURCE c-file;...] [EXCLUDE_FROM_ALL])`
+  Causes a SAC module to be built from file `source`
+
+As with the CMake `ADD_EXECUTABLE` and `ADD_LIBRARY`, you can create cross dependencies
+using `ADD_DEPENDENCIES`.
+
+For further details, read the documentation in `UseSAC.cmake` and `FindSAC.cmake`.
+
+### Additional CMake files; functions and macros
 
 These files provide macros and functions which can be directly called within
 your SaC project. A description of the features provided by each file is given
@@ -71,21 +126,6 @@ below:
   * `misc-macros.cmake` contains a miscellaneous collection of functions and
     macros. Further details on what these functions do is given as comments
     within.
-
-### CMake Project Language
-
-We also provide a CMake language specification for making CMake use the SaC compiler
-directly (_Note_ this is not fully tested yet!).
-
-To use the language specification, setup your `CMakeLists.txt` file as follows:
-```cmake
-project(SomeSACProject NONE)
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-common")
-enable_language(SAC)
-```
-Note that we set the project language to `NONE`, and then use `enable_language` to
-activate the SaC language specification.
 
 Setup
 -----
