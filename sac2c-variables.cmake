@@ -1,15 +1,10 @@
-# This file defines commonly used sac2c variables that are mainly coming
-# from reading sac2crc.
+# This file defines commonly used sac2c variables, mostly from sac2crc.
 #
 # Assumptions:
 #    * SAC2C_EXEC is set to operational sac2c. We assume that
 #      `check-sac2c.cmake' has been included earlier.
 #    * TARGET has been set to the target name we compile sac modules for.
 
-IF (NOT CMAKE_COMMON_DIR)
-    SET (CMAKE_COMMON_DIR "cmake-common")
-ENDIF ()
-INCLUDE ("${CMAKE_SOURCE_DIR}/${CMAKE_COMMON_DIR}/check-sac2c-feature-support.cmake") # for CHECK_SAC2C_SUPPORT_FLAG
 
 # Sanity check.  Check that we have a variable with sac2c executable.
 IF (NOT SAC2C_EXEC)
@@ -21,14 +16,9 @@ IF (NOT TARGET)
     MESSAGE (FATAL_ERROR "The TARGET variable is not set, which sac2c target shall we use?")
 ENDIF ()
 
-# Create local variant of the SAC2C flags
+# Create local copy of the SAC2C flags
 SET (SAC2C_T ${SAC2C_EXEC} ${SAC2C_CPP_INC} -target ${TARGET})
-CHECK_SAC2C_SUPPORT_FLAG ("xp" "-Xp" "-DTEST")
-IF (HAVE_FLAG_xp)
-    SET (SAC2C ${SAC2C_T} -Xp "\"${SAC2C_EXTRA_INC}\"" -Xtc "\"${SAC2C_EXTRA_INC}\"")
-ELSE ()
-    SET (SAC2C ${SAC2C_T} -Xc "\"${SAC2C_EXTRA_INC}\"" -Xtc "\"${SAC2C_EXTRA_INC}\"")
-ENDIF ()
+SET (SAC2C ${SAC2C_T} -Xc "\"${SAC2C_EXTRA_INC}\"" -Xtc "\"${SAC2C_EXTRA_INC}\"")
 
 # get the target environment - possibly `x64' or similar...
 EXECUTE_PROCESS (COMMAND ${SAC2C_T} -CTARGET_ENV
