@@ -67,12 +67,14 @@ MACRO (CTEST_SAC2C_WITH_VARIANTS name local_sac_modules sac2c_flags)
             ##MESSAGE (STATUS "PBF is " ${PBF})
 
 
-            # TODO Multi-thread testing
-            ##SET (THREDS 4) # loop04_naive takes 93s; loop04_apl takes 202s, etc! vs. 0.2s for -seq
-            SET (THREDS 1)
+            # FIXME Multi-thread testing - parallel slowdown!!
+            SET (THREDS 1 2 )
             SET (INF ${CMAKE_SOURCE_DIR}/${BM_NAME}/${BM_NAME}.inp)
-            # shell stuff in next line is so we can redirect stdin from a file
-            ADD_TEST (NAME Test-${TARGET}-${binary} COMMAND sh -c "${PBF}/${binary} -mt ${THREDS} < ${INF}")
+            FOREACH (THRED ${THREDS})
+              # shell stuff in next line is so we can redirect stdin from a file
+              SET (CMD  sh -c "${PBF}/${binary} -mt ${THRED} < ${INF}")
+              ADD_TEST (NAME Test-${TARGET}-${binary}-mt${THRED} COMMAND ${CMD})
+            ENDFOREACH ()
         ENDFOREACH ()
 
     ELSE ()  ## No variants
