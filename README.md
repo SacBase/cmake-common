@@ -1,9 +1,79 @@
-This repository contains a collection of CMake files that will be
-used to build sac2c packages.  We are going to use this repository
-as a sub-module in the packages so that maintenance of the common
-part of the build system gets easier.
+CMake Common for SaC-based Projects
+===================================
 
-Individual files have the following functionality:
+About
+-----
+
+This repository contains a collection of CMake files that are useful
+for building SaC-based projects, such as modules and SaC programs.
+
+A typical initial stage of making use of these CMake files is to
+add the repository as a git submodule, this way you can maintain a specific
+version of the files in your SaC project.
+
+Detailed Description
+--------------------
+
+### Use SAC in your CMake-based project
+
+To make it as easy as possible to use SAC within a CMake-based project,
+we provide a _package_ which searches for the SAC compiler and other tools
+and sets certain needed variables for building. Additionally, we provide
+the `UseSAC` module which provides some conveniences functions for building
+SAC programs and modules.
+
+To make use of this, you can use the following example `CMakeLists.txt` file
+as a base to start with:
+
+```cmake
+CMAKE_MINIMUM_REQUIRED (VERSION 3.19)
+
+# Project language can be anything really, we use C here as an example
+PROJECT (<project-name> C)
+
+# we need to append this repo to CMake module path
+LIST (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-common")
+
+# Now we can "find" sac2c and other tools; this provides paths to
+# the compiler with some variables set which might be needed to
+# compile some SAC code, e.g. provides the ${SAC_COMPILER} variable
+# for sac2c, and ${SAC_C_COMPILER} for saccc.
+FIND_PACKAGE (SAC REQUIRED)
+
+# Functions provided here make it easy to compile SAC programs
+# and modules!
+INCLUDE ("${CMAKE_SOURCE_DIR}/cmake-common/UseSAC.cmake")
+
+# When building modules, it is advisable to correct create a sac2crc
+# file so that the SAC compiler can find the modules
+INCLUDE ("${CMAKE_SOURCE_DIR}/cmake-common/misc-macros.cmake")
+CREATE_SAC2CRC_TARGET ("<project-name>" "${CMAKE_BINARY_DIR}/lib" "${CMAKE_BINARY_DIR}/lib" "")
+
+# Other CMake stuff...
+
+# Now we can call function to build SAC program
+ADD_SAC_EXECUTABLE (proga proga.sac)
+```
+
+Briefly, from `UseSAC` you can use the following functions:
+
+* `ADD_SAC_EXECUTABLE (name source [TARGET seq] [CSOURCE c-file;...] [EXCLUDE_FROM_ALL])`
+  Causes the SAC sources (together with any C-sources) to be compiled into a program called
+  `name`.
+
+* `ADD_SAC_LIBRARY (name source [TARGET seq] [CSOURCE c-file;...] [EXCLUDE_FROM_ALL])`
+  Causes a SAC module to be built from file `source`
+
+As with the CMake `ADD_EXECUTABLE` and `ADD_LIBRARY`, you can create cross dependencies
+using `ADD_DEPENDENCIES`.
+
+For further details, read the documentation in `UseSAC.cmake` and `FindSAC.cmake`.
+
+### Additional CMake files; functions and macros
+
+These files provide macros and functions which can be directly called within
+your SaC project. A description of the features provided by each file is given
+below:
 
   * `check-sac2c.cmake` checks whether we have an operational sac2c
      compiler.  The `SAC2C_EXEC` variable overrides search for
@@ -56,3 +126,28 @@ Individual files have the following functionality:
   * `misc-macros.cmake` contains a miscellaneous collection of functions and
     macros. Further details on what these functions do is given as comments
     within.
+
+Setup
+-----
+
+To add this repository as a submodule, do the following in your SaC project repository:
+```sh
+$ git submodule add https://github.com/SacBase/cmake-common.git
+$ git submodule update --init
+```
+
+If you later wish to pull a more recent version the `cmake-common` repo, you can do the
+following:
+```sh
+$ git submodule update --recursive --remote
+```
+
+Usage
+-----
+
+To use the functions and macros, you need to `INCLUDE` these into your CMake project.
+
+License
+-------
+
+See `LICENSE.txt` for details.
