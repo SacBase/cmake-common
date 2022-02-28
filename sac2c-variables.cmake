@@ -27,7 +27,6 @@ ENDIF ()
 
 # Create local copy of the SAC2C flags
 SET (SAC2C_T ${SAC2C_EXEC} ${SAC2C_FLAGS} ${SAC2C_CPP_INC} -target ${TARGET})
-SET (SAC2C ${SAC2C_T} -Xc "\"${SAC2C_EXTRA_INC}\"" -Xtc "\"${SAC2C_EXTRA_INC}\"")
 CHECK_SAC2C_SUPPORT_FLAG ("xp" "-Xp" "-DTEST")
 IF (HAVE_FLAG_xp)
     SET (SAC2C ${SAC2C_T} -Xp "\"${SAC2C_EXTRA_INC}\"" -Xtc "\"${SAC2C_EXTRA_INC}\"")
