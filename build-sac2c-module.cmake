@@ -45,7 +45,7 @@ MACRO (SAC2C_COMPILE_MOD_DEPS file_name file_deps local_sac_modules sac2c_flags)
     SET (mod
         "${DLL_BUILD_DIR}/${TARGET_ENV}/${SBI}/lib${namewe}Mod${MODEXT}")
     SET (tree
-        "${DLL_BUILD_DIR}/tree/${TARGET_ENV}/lib${namewe}Tree${TREE_DLLEXT}")
+        "${DLL_BUILD_DIR}/tree/${TARGET_ENV}/${SBI}/lib${namewe}Tree${TREE_DLLEXT}")
 
     RESOLVE_SAC_DEPENDENCIES ("${file_name}" "${local_sac_modules}" moddep_list)
 
