@@ -15,9 +15,9 @@ IF (NOT SAC2C_EXEC)
     MESSAGE (FATAL_ERROR "The SAC2C_EXEC variable is not set. (include check-sac2c.cmake?)")
 ENDIF ()
 
-# Sanity check.  Check that we have set SAC2C_FLAGS
+# Ensure that SAC2C_FLAGS is set.
 IF (NOT SAC2C_FLAGS)
-    MESSAGE (FATAL_ERROR "The SAC2C_FLAGS variable is not set. (include check-sac2c.cmake?)")
+    SET (SAC2C_FLAGS "")
 ENDIF ()
 
 # Sanity check. Check that TARGET is defined.
