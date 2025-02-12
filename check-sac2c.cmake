@@ -9,11 +9,8 @@ IF (NOT SAC2C_EXEC)
     # Make sure that we can set some value into this variable now.
     UNSET (SAC2C_EXEC CACHE)
 
-    # Try to find sac2c and fail if it is not there.
-    FIND_PROGRAM (SAC2C_EXEC NAMES "sac2c")
-    IF (NOT SAC2C_EXEC)
-        MESSAGE (FATAL_ERROR "Could not locate the sac2c binary, exiting...")
-    ENDIF ()
+    FIND_PACKAGE (SAC REQUIRED)
+    SET (SAC2C_EXEC ${SAC_COMPILER})
 ENDIF ()
 
 # Check that sac2c actually works by calling "sac2c -V"
