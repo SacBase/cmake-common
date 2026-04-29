@@ -5,7 +5,6 @@
 #   * DLL_BUILD_DIR has been previously defined.
 #   * `sac2c-variables.cmake' has been included.
 
-
 # Sanity check.  DLL_BUILD_DIR is the location where to put compiled
 # sac modules.  This is needed to generate local dependency correctly.
 IF (NOT DLL_BUILD_DIR)
@@ -18,7 +17,6 @@ ENDIF ()
 IF (NOT SBI)
     MESSAGE (FATAL_ERROR "The SBI variable is not set. (consider including sac2c-variables.cmake?)")
 ENDIF ()
-
 
 # This function for a given sac source file `file_name' calls
 # `${SAC2C_T} -M ${CMAKE_CURRENT_SOURCE_DIR}/${file_name}', and:
@@ -33,7 +31,7 @@ ENDIF ()
 #
 # The function stores list of local dependencies to the variable `${ret_name}'.
 #
-# NOTE: file_name should be a relative path so that concatenation with 
+# NOTE: file_name should be a relative path so that concatenation with
 #       CMAKE_CURRENT_XXX_DIR produces correct results.
 FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
     SET (ret)
@@ -52,9 +50,11 @@ FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
     # Create pathes to search libraries per given target
     STRING (REPLACE ":" ";" tree_dir_list "${TREE_OUTPUTDIR}")
     STRING (REPLACE ":" ";" lib_dir_list "${LIB_OUTPUTDIR}")
+
     FOREACH (p ${tree_dir_list})
         LIST (APPEND target_tree_output "${p}/tree/${TARGET_ENV}")
     ENDFOREACH ()
+
     FOREACH (p ${lib_dir_list})
         LIST (APPEND target_lib_output "${p}/${TARGET_ENV}/${SBI}")
     ENDFOREACH ()
@@ -68,7 +68,10 @@ FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
     # Filter dep_list
     FOREACH (dep ${dep_list})
         # If dependency is a Mod or a Tree file
-        STRING (REGEX MATCH "^lib(.+)(Mod|Tree)${TREE_DLLEXT}$" match "${dep}")
+        #  - ${CMAKE_MATCH_1}: the module name
+        #  - ${CMAKE_MATCH_2}: "Mod" or "Tree"
+        #  - ${CMAKE_MATCH_3}: the variant (may be empty)
+        STRING (REGEX MATCH "^lib(.+)(Mod|Tree)(.*)${TREE_DLLEXT}$" match "${dep}")
         IF (match)
             SET (n "${CMAKE_MATCH_1}")
             SET (libtype "${CMAKE_MATCH_2}")
@@ -81,6 +84,7 @@ FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
                 IF ("${libtype}" STREQUAL "Tree")
                     SET (d "${DLL_BUILD_DIR}/tree/${TARGET_ENV}/${dep}")
                 ENDIF ()
+
                 # If so, keep it as a dependency.
                 LIST (APPEND ret "${d}")
             ELSEIF ("${n}.xsac" IN_LIST local_file_list)
@@ -89,6 +93,7 @@ FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
                 IF ("${libtype}" STREQUAL "Tree")
                     SET (d "${DLL_BUILD_DIR}/tree/${TARGET_ENV}/${dep}")
                 ENDIF ()
+
                 # If so, keep it as a dependency.
                 LIST (APPEND ret "${d}")
             ELSE ()
@@ -106,12 +111,14 @@ FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
                     NAMES ${dep}
                     HINTS ${search_pathes}
                     NO_DEFAULT_PATH)
+
                 IF (NOT lib)
                     UNSET (lib CACHE) # otherwise we never update the variable
                     MESSAGE (FATAL_ERROR
                              "Exteral SAC ${libtype} file `${n}' which is required "
                              "to build `${file_name}' is not found!")
                 ENDIF ()
+
                 UNSET (lib CACHE) # otherwise we never update the variable
             ENDIF ()
         ELSE ()
@@ -121,12 +128,13 @@ FUNCTION (RESOLVE_SAC_DEPENDENCIES file_name local_sources ret_name)
             IF (match)
                 # Construct the path that is relative to the given sac file!
                 GET_FILENAME_COMPONENT (sac_file_dir "${file_name}" DIRECTORY)
-                
+
                 # If so, add it to the list of dependencies
                 LIST (APPEND ret "${CMAKE_CURRENT_BINARY_DIR}/${sac_file_dir}/${dep}")
             ENDIF ()
         ENDIF ()
     ENDFOREACH ()
+
     SET (${ret_name} ${ret} PARENT_SCOPE)
 ENDFUNCTION ()
 

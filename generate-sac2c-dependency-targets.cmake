@@ -46,7 +46,10 @@ FUNCTION (RESOLVE_SAC_DEPS_AS_TARGETS file_name target_name_template ret_targets
     # Filter dep_list
     FOREACH (dep ${dep_list})
         # If dependency is a Mod or a Tree file
-        STRING (REGEX MATCH "^lib(.+)(Mod|Tree)${TREE_DLLEXT}$" match "${dep}")
+        #  - ${CMAKE_MATCH_1}: the module name
+        #  - ${CMAKE_MATCH_2}: "Mod" or "Tree"
+        #  - ${CMAKE_MATCH_3}: the variant (may be empty)
+        STRING (REGEX MATCH "^lib(.+)(Mod|Tree)(.*)${TREE_DLLEXT}$" match "${dep}")
         IF (match)
             # We replace the template format keywords with their local value
             SET (target_name "${target_name_template}")
@@ -71,6 +74,7 @@ FUNCTION (RESOLVE_SAC_DEPS_AS_TARGETS file_name target_name_template ret_targets
             ENDIF ()
         ENDIF ()
     ENDFOREACH ()
+
     # If we have a list, we remove all duplicates.
     # XXX This is needed because we have lib*Mod and lib*Tree files, for the
     # same module, thus leading to duplicates. We should fix this in the
@@ -79,6 +83,7 @@ FUNCTION (RESOLVE_SAC_DEPS_AS_TARGETS file_name target_name_template ret_targets
         LIST (REMOVE_DUPLICATES ret)
         LIST (REMOVE_DUPLICATES ret_srcs)
     ENDIF ()
+
     MESSAGE (DEBUG "For ${file_name}, we found the following dependencies: ${ret} ${ret_srcs}")
     SET (${ret_targets} ${ret} PARENT_SCOPE)
     SET (${ret_objs} ${ret_obj} PARENT_SCOPE)
